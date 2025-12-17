@@ -13,7 +13,7 @@ const app: Express = express() //express initization
 const port = process.env.PORT
 
 
-const mongoDB: string = "mongodb://127.0.0.1:27017/DndMapPresenter"
+const mongoDB: string = "mongodb://127.0.0.1:27017/DataIntensive1"
 mongoose.connect(mongoDB)
 mongoose.Promise = Promise
 const db: Connection = mongoose.connection

@@ -1,0 +1,40 @@
+[{
+  "name": "flu",
+  "test": "sneezing"
+},
+{
+  "name": "cancer",
+  "test": "dangerous"
+},
+{
+  "name": "influensa",
+  "test": "spreads fast"
+},
+{
+  "name": "tubeculose",
+  "test": "watching too much youtube"
+},
+{
+  "name": "diabetes",
+  "test": "sugar diseases"
+},
+{
+  "name": "Hypertension",
+  "test": "Blood Pressure"
+},
+{
+  "name": "Lyme Disease",
+  "test": "Antibody Test"
+},
+{
+  "name": "Hepatitis B",
+  "test": "Antigen Test"
+},
+{
+  "name": "COVID-19",
+  "test": "PCR Test"
+},
+{
+  "name": "Measles",
+  "test": "IgM Test"
+}]

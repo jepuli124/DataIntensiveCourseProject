@@ -1,9 +1,48 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-const ChooseTable: React.FC = () => {
+
+interface incomingParams {
+    updateTable?: (table: string) => void
+}
+
+
+const ChooseTable: React.FC<incomingParams> = ({updateTable}) => {
+  
+  const[tableNames, setTableNames] = useState<string[]>([])
+  const[target, setTarget] = useState<number | undefined>(undefined)
+
+  useEffect(() => {
+      const abortCtrl: AbortController = new AbortController()
+      const fetchTable = async () => { 
+          const incomingData = await fetch('/api/tables')
+          if(!incomingData.ok){
+              console.log("fetch failed")
+          return
+          }
+          const parcedData: string[]  = await incomingData.json()
+      
+          setTableNames(parcedData)
+      }
+      fetchTable()
+      return () => abortCtrl.abort()
+      }, [])
+  
+    const updateTableTrigger = (index: number, name: string) => { // this is just to make the return prettier
+      if(updateTable)
+        { 
+          updateTable(name)
+          setTarget(index)
+        }
+      }
+
   return (
     <div>
-      
+      {tableNames.map((name: string, index: number) => 
+        <div key={index} onClick={() => updateTableTrigger(index, name)}>
+          <h2>{name}</h2>
+          {target == index ? <><p>This has been chosen</p></>: <></>}
+        </div>
+      )}
     </div>
   )
 }

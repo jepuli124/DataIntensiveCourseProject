@@ -1,5 +1,4 @@
 import pymongo
-import psycopg
 import json
 import os
 

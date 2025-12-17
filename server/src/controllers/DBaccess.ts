@@ -1,4 +1,20 @@
+import { User } from "../models/User"
 
+export const allUsers = async (req: any, res: any) => { // returns all users in a list
+    try {
+        const users = await User.find()
+        if(!users){
+            return res.status(404).json({msg: "users not found"})
+        }
+        return res.status(200).json(users) 
+
+    } catch (error: any) {
+        console.log(`Error while fetching tags: ${error}`)
+        return res.status(500).json({message: "Internal server error"})
+    }
+    }
+
+/* SAMPLE CODE FROM KONSTA
 export const markersByMapId = async (req: any, res: any) => { // returns all markers by mapID in a list
     try {
         const markers = await Marker.find({mapThisBelongsTo: req.params["id"]})
@@ -13,19 +29,8 @@ export const markersByMapId = async (req: any, res: any) => { // returns all mar
     }
     }
 
-export const uploadMarker = async (req: any, res: any) => { //upload a marker
+export const uploadMarker = async (req: any, res: any) => { //upload a markerk
     try {
-        let campain: string = ""
-        let tags: string[] = []
-        if(req.body.linkToAnotherMap){
-            const map: ILocationMap | null = await LocationMap.findById(req.body.linkToAnotherMap)
-            if(map){
-                map.tags.forEach((tag) => {
-                    tags.push(tag.name)
-                })
-                campain = map.campain
-            }
-        }
 
         let newMarker: IMarker = new Marker ({
             x: req.body.x,
@@ -33,8 +38,6 @@ export const uploadMarker = async (req: any, res: any) => { //upload a marker
             color: req.body.color,
             symbol: req.body.symbol,
             mapThisBelongsTo: req.body.mapThisBelongsTo,
-            tags: tags,
-            campain: campain,
             linkToAnotherMap: req.body.linkToAnotherMap
         })
         await newMarker.save()
@@ -47,32 +50,13 @@ export const uploadMarker = async (req: any, res: any) => { //upload a marker
 
 export const editMarker = async (req: any, res: any) => { //upload a marker
     try {
-        if(req.body.linkToAnotherMap){
-            let campain: string = ""
-            let tags: string[] = []
-            const map: ILocationMap | null = await LocationMap.findById(req.body.linkToAnotherMap)
-            if(map){
-                map.tags.forEach((tag) => {
-                    tags.push(tag.name)
-                })
-                campain = map.campain
-            }
-            const marker = await Marker.findByIdAndUpdate(req.params.id, {
-            color: req.body.color,
-            symbol: req.body.symbol,
-            tags: tags,
-            campain: campain,
-            mapThisBelongsTo: req.body.mapThisBelongsTo,
-            linkToAnotherMap: req.body.linkToAnotherMap
-            })
-        } else {
+
             const marker = await Marker.findByIdAndUpdate(req.params.id, {
             color: req.body.color,
             symbol: req.body.symbol,
             mapThisBelongsTo: req.body.mapThisBelongsTo,
             linkToAnotherMap: req.body.linkToAnotherMap
             })
-        }
         
         return res.status(201).json({msg: `successful operation in updating marker`})
     } catch (error: any) {
@@ -91,3 +75,4 @@ export const deleteMarker = async (req: any, res: any) => { //delete a  marker
         return res.status(500).json({message: "Internal server error"})
     }
 }
+    */

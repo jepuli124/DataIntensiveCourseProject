@@ -56,8 +56,8 @@ export const register = async (req: Request, res: Response): Promise<void> => { 
 
         await newInvetory.save()
         let IID = undefined
-        if (newInvetory.id !== undefined){
-            IID = newInvetory.id
+        if (newInvetory.inventoryID !== undefined){
+            IID = newInvetory.inventoryID
         }
         const newUser = new User ({
             username: req.body.username,

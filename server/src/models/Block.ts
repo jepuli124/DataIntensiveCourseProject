@@ -1,7 +1,7 @@
 import mongoose, {Document, Schema} from "mongoose";
 
 interface IBlock extends Document{
-    itemID?: string
+    itemID: string
     chunkID: string
     chunk_coordinate_x: number
     chunk_coordinate_y: number

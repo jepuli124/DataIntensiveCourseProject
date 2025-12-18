@@ -1,16 +1,19 @@
-import mongoose, {Date, Document, Schema} from "mongoose";
+import mongoose, {Document, Schema} from "mongoose";
 
 interface IInventory extends Document{
-    id?: string
+    inventoryID: string
+    userID: string
     regionID: string
-    userID?: string
+    inventoryName: string
 }
 
 let inventories: Schema = new Schema ({
+    inventoryID: {type: String, require: true},
+    userID: {type: String, require: true},
     regionID: {type: String, require: true},
-    userID: {type: String, require: false}
+    inventoryName: {type: String, require: true}
 })
 
-const Inventory: mongoose.Model<IInventory> = mongoose.model<IInventory>("inventories", inventories)
+const Inventory: mongoose.Model<IInventory> = mongoose.model<IInventory>("Inventory", inventories)
 
 export {IInventory, Inventory}

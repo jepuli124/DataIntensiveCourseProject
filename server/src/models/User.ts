@@ -1,26 +1,21 @@
-import mongoose, {Date, Document, Schema} from "mongoose";
+import mongoose, {Document, Schema} from "mongoose";
 
 interface IUser extends Document{
-    id?: string //not in schema as this replaces the id. in case of error panic
-    username: string
+    userID: string
+    regionID: string
     passwordHash: string
-    isAdmin: boolean
-    email: string
-    createdAt: Date
-    regionID?: string
+    username: string
     inventoryID: string
 }
 
 let users: Schema = new Schema ({
-    username: {type: String, require: true},
-    passwordHash: {type: String, require: true},
-    isAdmin: {type: Boolean, require: true},
-    email: {type: String, require: true},
-    createdAt: {type: Date, require: true},
-    regionID: {type: String, require: false},
-    inventoryID: {type: String, require: true}
+    userID: {type: String, required: true, unique: true},
+    regionID: {type: String, required: true},
+    passwordHash: {type: String, required: true},
+    username: {type: String, required: true},
+    inventoryID: {type: String, required: true}
 })
 
-const User: mongoose.Model<IUser> = mongoose.model<IUser>("users", users)
+const User: mongoose.Model<IUser> = mongoose.model<IUser>("User", users)
 
 export {IUser, User}

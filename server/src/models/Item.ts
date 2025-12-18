@@ -1,14 +1,21 @@
-import mongoose, {Date, Document, Schema} from "mongoose";
+import mongoose, {Document, Schema} from "mongoose";
 
 interface IItem extends Document{
-    id?: string
-    type: string
+    regionID: string
+    itemID: string
+    inventoryID: string
+    amount: number
+    itemName: string
 }
 
 let items: Schema = new Schema ({
-    type: {type: String, require: true}
+    regionID: {type: String, require: true},
+    itemID: {type: String, require: true},
+    inventoryID: {type: String, require: true},
+    amount: {type: Number, require: true},
+    itemName: {type: String, require: true}
 })
 
-const Item: mongoose.Model<IItem> = mongoose.model<IItem>("logs", items)
+const Item: mongoose.Model<IItem> = mongoose.model<IItem>("Item", items)
 
 export {IItem, Item}

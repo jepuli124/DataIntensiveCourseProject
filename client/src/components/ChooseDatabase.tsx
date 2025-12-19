@@ -17,9 +17,9 @@ const ChooseDatabase: React.FC<incomingParams> = ({updateDatabase}) => { //compo
             console.log("fetch failed")
         return
         }
-        const parcedData: string[]  = await incomingData.json()
+        const parcedData: { databases: string[] }  = await incomingData.json()
     
-        setDatabaseNames(parcedData)
+        setDatabaseNames(parcedData.databases)
     }
     fetchDatabases()
     return () => abortCtrl.abort()

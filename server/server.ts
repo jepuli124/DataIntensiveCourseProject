@@ -13,12 +13,18 @@ const app: Express = express() //express initization
 const port = process.env.PORT
 
 
-const mongoDB: string = "mongodb://127.0.0.1:27017/DataIntensive1"
-mongoose.connect(mongoDB)
-mongoose.Promise = Promise
-const db: Connection = mongoose.connection
+export const connections: Record<string, mongoose.Connection> = {
+  GameDB1: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDB1"),
+  GameDB2: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDB2"),
+  GameDB3: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDB3"),
+};
 
-db.on("error", console.error.bind(console, "apua lol"))
+
+for (const [name, conn] of Object.entries(connections)) {
+  conn.on("connected", () => console.log(`${name} connected successfully.`));
+  conn.on("error", (err) => console.error(`${name} connection error:`, err));
+}
+
 
 app.use(express.json()); //parses the incoming post body
 app.use(express.static(path.join(__dirname, "../public")))

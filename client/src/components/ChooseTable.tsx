@@ -19,9 +19,9 @@ const ChooseTable: React.FC<incomingParams> = ({updateTable}) => {
               console.log("fetch failed")
           return
           }
-          const parcedData: string[]  = await incomingData.json()
+          const parcedData: { tables: string[] } = await incomingData.json();
       
-          setTableNames(parcedData)
+          setTableNames(parcedData.tables)
       }
       fetchTable()
       return () => abortCtrl.abort()

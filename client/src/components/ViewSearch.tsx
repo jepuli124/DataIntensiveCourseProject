@@ -31,20 +31,20 @@ const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that do
     useEffect(() => {
         const abortCtrl: AbortController = new AbortController()
         const fetchData = async () => {
+            
             if(!url) return 
-            const incomingData = await fetch('/api/' + url)
+            const incomingData = await fetch(url)
             if(!incomingData.ok){
                 console.log("fetch failed")
             return
             }
             
-            const parcedData: unknownServerObject[]  = await incomingData.json()
-        
-            setItemlist(parcedData)
+            const parcedData  = await incomingData.json()
+            setItemlist(parcedData.data)
         }
         fetchData()
         return () => abortCtrl.abort()
-    }, [])
+    }, [url])
 
     return (
         <div>

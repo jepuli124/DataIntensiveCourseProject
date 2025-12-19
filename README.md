@@ -9,7 +9,7 @@ Muista ladata npm packages seuraavilla komennoilla
 
 #: npm run preinstall npm run install
 
-create a .env file in server directory and add as a password protector: SECRET=anything here
+create a .env file in server directory, put PORT=3234 and SECRET=anything here there
 
 käynistä ohjelma ajamalla seuraavat kaksi komentoa eri terminaaleissa:
 

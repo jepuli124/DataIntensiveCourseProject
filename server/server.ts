@@ -14,9 +14,9 @@ const port = process.env.PORT
 
 
 export const connections: Record<string, mongoose.Connection> = {
-  GameDB1: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDB1"),
-  GameDB2: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDB2"),
-  GameDB3: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDB3"),
+  GameDBRegion1: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDBRegion1"),
+  GameDBRegion2: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDBRegion2"),
+  GameDBRegion3: mongoose.createConnection("mongodb://127.0.0.1:27017/GameDBRegion3"),
 };
 
 

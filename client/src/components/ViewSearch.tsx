@@ -41,6 +41,8 @@ const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that do
             
             const parcedData  = await incomingData.json()
             setItemlist(parcedData.data)
+            console.log(itemList);
+            
         }
         fetchData()
         return () => abortCtrl.abort()

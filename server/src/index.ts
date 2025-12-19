@@ -29,7 +29,7 @@ router.get('/api/tables', async (req: Request, res: Response) => {
 
 	// Get the collections. Because the databases are homogenous all of them have same collections.
 	try {
-		const db = connections["GameDB1"]
+		const db = connections["GameDBRegion1"]
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })

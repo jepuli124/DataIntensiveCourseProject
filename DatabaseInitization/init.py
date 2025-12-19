@@ -2,7 +2,7 @@ import pymongo
 import json
 
 # The 3 databases to be created (homogenous architecture so data are the same in all 3)
-databases = ["GameDB1", "GameDB2", "GameDB3"] 
+databases = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"] 
 # The collections to be created in each database
 collections = ["Item", "Inventory", "User", "World", "WorldChunk", "Block", "Trade"]
 

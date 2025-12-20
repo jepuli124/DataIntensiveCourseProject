@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 
 
 interface incomingParams {
-    updateTable?: (table: string) => void
+    updateTable?: (table: string) => void,
+    fetchTables: boolean
 }
 
 
-const ChooseTable: React.FC<incomingParams> = ({updateTable}) => {
+const ChooseTable: React.FC<incomingParams> = ({updateTable, fetchTables = false}) => {
   
   const[tableNames, setTableNames] = useState<string[]>([])
   const[target, setTarget] = useState<number | undefined>(undefined)
@@ -14,6 +15,9 @@ const ChooseTable: React.FC<incomingParams> = ({updateTable}) => {
   useEffect(() => {
       const abortCtrl: AbortController = new AbortController()
       const fetchTable = async () => { 
+          if(!fetchTables){
+            return
+          }
           const incomingData = await fetch('/api/tables')
           if(!incomingData.ok){
               console.log("fetch failed")

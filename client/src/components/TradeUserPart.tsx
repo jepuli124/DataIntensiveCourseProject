@@ -6,10 +6,17 @@ interface incomingParams {
     userItems: IUserItem[]
 }
 
-const TradeUserPart: React.FC<incomingParams> = ({mirrored = false}) => {
-    
+const TradeUserPart: React.FC<incomingParams> = ({mirrored = false, userItems}) => {
+    const alignment = mirrored ? "right" : "left" 
     return (
-        <div>TradeUserPart</div>
+        <div style={{alignContent = alignment}}>
+            {userItems.map((item, index) => {
+                <div key={index} style={{border: "1px black"}}>
+                    <h1>{item.itemName}</h1>
+                    <p>{item.amount}</p>
+                </div>
+            })}
+        </div>
     )
 }
 

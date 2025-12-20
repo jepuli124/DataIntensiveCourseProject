@@ -8,6 +8,7 @@ const AllViewTop: React.FC = () => { //over head function that transfare data be
   const [table, setTable] = useState<string>("none")
   const [url, setUrl] = useState<string | undefined>(undefined)
   const [urlError, setUrlError] = useState<boolean>(false)
+  const [showTable, setShowTables] = useState<boolean>(false)
 
   const updateUrl = () => {
     if(table !== "none" && database !== "none"){
@@ -22,8 +23,11 @@ const AllViewTop: React.FC = () => { //over head function that transfare data be
   return (
     <div>
       <div style={{display: 'flex'}}>
-      <ChooseDatabase updateDatabase={(databaseChange: string) => setDatabase(databaseChange)}></ChooseDatabase>
-      <ChooseTable updateTable={(tableChange: string) => setTable(tableChange)}></ChooseTable>
+      <ChooseDatabase updateDatabase={(databaseChange: string) => {
+        setDatabase(databaseChange)
+        setShowTables(true)
+      }}></ChooseDatabase>
+      <ChooseTable updateTable={(tableChange: string) => setTable(tableChange), showTable}></ChooseTable>
       <ViewSearch url={url}></ViewSearch>
       </div>
       <div>

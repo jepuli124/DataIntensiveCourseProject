@@ -2,9 +2,14 @@ import mongoose from 'mongoose'
 import {Request, Response, Router} from "express"
 import { connections } from "../server"
 import { log } from 'console'
-import {IWorldChunk, WorldChunk} from "./models/WorldChunk"
-import {IWorld, World} from "./models/World"
 import {IBlock, Block} from "./models/Block"
+import {IInventory, Inventory} from "./models/Inventory"
+import {IItem, Item} from "./models/Item"
+import {ITrade, Trade} from "./models/Trade"
+import {IUser, User} from "./models/User"
+import {IWorld, World} from "./models/World"
+import {IWorldChunk, WorldChunk} from "./models/WorldChunk"
+
 
 const router: Router = Router()
 
@@ -100,7 +105,7 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
 
-		const userDocument: any = await collection.findOne({"userID": userID});
+		const userDocument: IUser | null = await collection.findOne({"userID": userID}) as IUser | null;
 
 		return res.json({ data: userDocument });
   	} catch (err: any) {
@@ -127,7 +132,7 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
 		// Find the correct world and return it.
-		const worldDocument: any = await collection.findOne({"worldID": worldID});
+		const worldDocument: IWorld | null = await collection.findOne({"worldID": worldID}) as IWorld | null;
 		return res.json({ data: worldDocument });
 	} catch (err: any) {
 		console.error("Failed to fetch collection", err);
@@ -149,7 +154,7 @@ router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
-		const inventoryDocument: any = await collection.findOne({"inventoryID": inventoryID});
+		const inventoryDocument: IInventory | null = await collection.findOne({"inventoryID": inventoryID}) as IInventory | null;
 		return res.json({ data: inventoryDocument });
 	} catch (err: any) {
 		console.error("Failed to fetch collection", err);
@@ -260,7 +265,7 @@ router.get("/api/worldBlocks/:ChunkID", async (req: Request, res: Response) => {
 		}
 
 		// Find all of the blocks with the id, and save as an array
-		const blockList: any = await collection.find({"chunkID": ChunkID}).toArray();
+		const blockList: IBlock[] = await collection.find({"chunkID": ChunkID}).toArray() as IBlock[];
 		
 		// Return said blocks to front-end so it can render them
 		return res.json({ data: blockList });
@@ -334,9 +339,9 @@ router.get("/api/confirmTrade/:tradeID", async (req:Request, res:Response) => {
 			if (!collection) {
 				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
 			}
-			let trade: any = await collection.findOne({"tradeID": tradeID});
+			let trade: ITrade | null = await collection.findOne({"tradeID": tradeID}) as ITrade | null;
 			if (trade) {
-				const itemCollection: any = db.collection("Item");
+				const itemCollection: mongoose.Collection = db.collection("Item");
 				if (!itemCollection) {
 					return res.status(500).json({ error: `No Item collection available in ${dbName}, please init database` });
 				}

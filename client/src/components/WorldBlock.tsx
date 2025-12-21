@@ -16,7 +16,7 @@ const WorldBlock: React.FC<incomingParams> = ({ ChunkID }) => {
         const fetchData = async () => {
             
             if(!ChunkID) return 
-            const incomingData = await fetch('/api/worldblocks/:' + ChunkID) // fetchin block data by chunkID
+            const incomingData = await fetch('/api/worldblocks/' + ChunkID) // fetchin block data by chunkID
             if(!incomingData.ok){
                 console.log("fetch failed")
             return
@@ -33,12 +33,12 @@ const WorldBlock: React.FC<incomingParams> = ({ ChunkID }) => {
     }, [ChunkID])
 
     return (
-        <div style={{ background: 'blue'}}>
+        <div style={{ background: 'blue', display: 'flex', grid: 'auto auto'}}>
             {blockList.map((block: block, index: number) => (
                 <div key={index}>
-                    {block.itemID == "item1" ? <img src="brown.png"></img> : <></> }
-                    {block.itemID == "item2" ? <img src="green.png"></img> : <></> }
-                    {block.itemID == "item3" ? <img src="white.png"></img> : <></> }
+                    {block.itemID == "item1" ? <img src="/brown.png"></img> : <></> }
+                    {block.itemID == "item2" ? <img src="/green.png"></img> : <></> }
+                    {block.itemID == "item3" ? <img src="/white.png"></img> : <></> }
                 </div>
             ))}
         </div>

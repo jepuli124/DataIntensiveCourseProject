@@ -289,7 +289,7 @@ router.get("/api/worldBlocks/:ChunkID", async (req: Request, res: Response) => {
 
 		// Find all of the blocks with the id, and save as an array
 		const blockList: IBlock[] = await collection.find({"chunkID": ChunkID}).toArray() as IBlock[];
-		console.log("blocklist", blockList)
+
 		// Return said blocks to front-end so it can render them
 		return res.json({ data: blockList });
 		} catch (err: any) {

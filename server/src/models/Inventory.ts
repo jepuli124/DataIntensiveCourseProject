@@ -8,8 +8,8 @@ interface IInventory extends Document{
 }
 
 let inventories: Schema = new Schema ({
-    inventoryID: {type: String, require: true},
-    userID: {type: String, require: true},
+    inventoryID: {type: String, require: false},
+    userID: {type: String, require: false},
     regionID: {type: String, require: true},
     inventoryName: {type: String, require: true}
 })

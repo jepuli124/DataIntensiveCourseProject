@@ -9,7 +9,7 @@ interface IUser extends Document{
 }
 
 let users: Schema = new Schema ({
-    userID: {type: String, required: true, unique: true},
+    userID: {type: String, required: false, unique: true},
     regionID: {type: String, required: true},
     passwordHash: {type: String, required: true},
     username: {type: String, required: true},

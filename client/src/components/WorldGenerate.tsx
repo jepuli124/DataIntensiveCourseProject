@@ -4,8 +4,10 @@ const WorldGenerate: React.FC = () => { //asks backend to generate new world and
 
     const generateWorld = async() => {
         const incomingData = await fetch('/api/generateworld/')
-        const parsedData: {worldID: string} = await incomingData.json()
-        const worldID = parsedData.worldID
+        const parsedData: {worldCreated: {worldID: string}} = await incomingData.json()
+        console.log(parsedData.worldCreated)        
+        const worldID = parsedData.worldCreated.worldID
+        console.log(worldID)
     }
     return (
         <div>

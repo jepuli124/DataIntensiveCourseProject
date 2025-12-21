@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import World from "./World";
 import type { chunk } from "../interfaces/chunk";
+import { useParams } from "react-router-dom";
 
 
 interface incomingParams {
-    url?: string
+
 }
 
-const WorldView: React.FC<incomingParams> = ({ url }) => { // stars building world by chopping world down to chunks from world data given by backend
+const WorldView: React.FC<incomingParams> = ({  }) => { // stars building world by chopping world down to chunks from world data given by backend
 
     const [world, setWorld] = useState<chunk[] | undefined>(undefined)
+    const params = useParams()
+    const url = params.worldid // collects the world id from url
+
     useEffect(() => {
         const abortCtrl: AbortController = new AbortController()
         const fetchData = async () => {
@@ -23,7 +27,6 @@ const WorldView: React.FC<incomingParams> = ({ url }) => { // stars building wor
             
             const parcedData  = await incomingData.json()
             setWorld(parcedData.data)
-            
         }
 
         fetchData()

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import {Request, Response, Router} from "express"
 import { connections } from "../server"
-import { log } from 'console'
+
 import {IBlock, Block} from "./models/Block"
 import {IInventory, Inventory} from "./models/Inventory"
 import {IItem, Item} from "./models/Item"
@@ -9,6 +9,7 @@ import {ITrade, Trade} from "./models/Trade"
 import {IUser, User} from "./models/User"
 import {IWorld, World} from "./models/World"
 import {IWorldChunk, WorldChunk} from "./models/WorldChunk"
+import { login, register } from './controllers/UserControl'
 
 
 const router: Router = Router()
@@ -87,14 +88,14 @@ router.get("/api/databases/:database/:table", async (req: Request, res: Response
 router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 	try {
 		// Read params (log also)
-    	const { userID }: any = req.params;
-		console.log("params:", req.params);
-		console.log("connections:", Object.keys(connections));
+    	const userID: string = req.params["userID"];
+		//console.log("params:", req.params);
+		//console.log("connections:", Object.keys(connections));
 
 		// Again fixed database because of prototyping and homogenous database system
-		console.log(connections);
+		//console.log(connections);
 		const db: mongoose.Connection = connections["GameDBRegion1"]
-		console.log(db);
+		//console.log(db);
 		
 		// Error check
 		if (!db) {
@@ -106,7 +107,7 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 		}
 
 		const userDocument: IUser | null = await collection.findOne({"userID": userID}) as IUser | null;
-
+		//console.log(userID, userDocument)
 		return res.json({ data: userDocument });
   	} catch (err: any) {
 		console.error("Failed to fetch collection", err);
@@ -155,6 +156,28 @@ router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
 		const inventoryDocument: IInventory | null = await collection.findOne({"inventoryID": inventoryID}) as IInventory | null;
+		return res.json({ data: inventoryDocument });
+	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
+})
+
+// Returns items by inventoryID
+router.get("/api/items/:inventoryID", async (req: Request, res: Response) =>{
+	try {
+		const { inventoryID }: any = req.params;
+		const db: mongoose.Connection = connections["GameDBRegion1"]
+		
+		// Error check
+		if (!db) {
+			return res.status(500).json({ error: 'No database connection available' })
+		}
+		const collection: mongoose.Collection = db.collection("Item");
+		if (!collection) {
+			return res.status(500).json({error: "No collection available, please init database"})
+		}
+		const inventoryDocument: IItem[] | null = await collection.find({"inventoryID": inventoryID}).toArray() as IItem[] | null;
 		return res.json({ data: inventoryDocument });
 	} catch (err: any) {
 		console.error("Failed to fetch collection", err);
@@ -291,7 +314,7 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 			receiverID = "user" + (Math.floor(Math.random() * 30) + 1);
 		} while (receiverID === senderID);
 
-		const itemID: string = "item" + (Math.floor(Math.random() * 100) + 1);
+		const itemID: string = "item" + (Math.floor(Math.random() * 700) + 30);
 
 		const tradeDocument: { tradeID: string; senderID: string; receiverID: string; itemID: string } = {
 			tradeID: tradeID,
@@ -340,6 +363,7 @@ router.get("/api/confirmTrade/:tradeID", async (req:Request, res:Response) => {
 				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
 			}
 			let trade: ITrade | null = await collection.findOne({"tradeID": tradeID}) as ITrade | null;
+			console.log(trade)
 			if (trade) {
 				const itemCollection: mongoose.Collection = db.collection("Item");
 				if (!itemCollection) {
@@ -359,4 +383,10 @@ router.get("/api/confirmTrade/:tradeID", async (req:Request, res:Response) => {
   }
 })
 
+router.post('/api/register', register); // function is in separate file.
+
+router.post('/api/login', login);
+
 export default router
+
+

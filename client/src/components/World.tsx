@@ -1,20 +1,20 @@
 import React from "react"
+import WorldBlock from "./WorldBlock"
+import type { chunk } from "../interfaces/chunk"
 
 interface incomingParams {
-    world: unknown
+    worldChunks: chunk[]
 }
 
-const World: React.FC<incomingParams> = ( { world } ) => {
+
+
+const World: React.FC<incomingParams> = ( { worldChunks: world } ) => {
 
     return (
         <div>
-            {world.map((chunk: unknown, index: number) => (
+            {world.map((chunk: chunk, index: number) => (
                 <div key={index}>
-                    {chunk.map((block: unknown, blockIndex: number) => (
-                        <div key={blockIndex}>
-                            
-                        </div>
-                    ))}
+                    <WorldBlock ChunkID={chunk.chunkID}></WorldBlock>
                 </div>
             ))}
         </div>

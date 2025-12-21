@@ -132,4 +132,25 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	}
 });
 
+router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>{
+	try {
+		const { inventoryID } = req.params;
+		const db = connections["GameDBRegion1"]
+		
+		// Error check
+		if (!db) {
+			return res.status(500).json({ error: 'No database connection available' })
+		}
+		const collection = db.collection("Inventory");
+		if (!collection) {
+			return res.status(500).json({error: "No collection available"})
+		}
+		const inventoryDocument = await collection.findOne({"inventoryID": inventoryID});
+		return res.json({ data: inventoryDocument });
+	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
+})
+
 export default router

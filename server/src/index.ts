@@ -327,7 +327,7 @@ router.get("/api/chunks/:worldID", async (req: Request, res: Response) => {
 
 
 
-// Creates a trade between two random users (for prototype) and returns to the user
+// Creates a mock trade between two random users (for prototype) and returns to the user
 router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 	try {
 		const dbNames: string[] = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
@@ -341,7 +341,7 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 			receiverID = "user" + (Math.floor(Math.random() * 30) + 1);
 		} while (receiverID === senderID);
 
-		const itemID: string = "item" + (Math.floor(Math.random() * 700) + 30);
+		const itemID: string = "item" + (Math.floor(Math.random() * 100) + 1); // Generates a random item for the sender inventory for demo trade purposes
 
 		const tradeDocument: { tradeID: string; senderID: string; receiverID: string; itemID: string } = {
 			tradeID: tradeID,
@@ -376,6 +376,7 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 	}
 })
 
+// Confirms a trade by tradeID, moves item from sender to receiver
 router.get("/api/confirmTrade/:tradeID", async (req:Request, res:Response) => {
 	try {
     	const { tradeID }: any = req.params;

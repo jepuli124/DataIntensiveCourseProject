@@ -77,15 +77,6 @@ router.get("/api/databases/:database/:table", async (req: Request, res: Response
   }
 });
 
-router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
-	try {
-    	const tradeID = req.params;
-  	} catch (err: any) {
-		console.error("Failed to fetch collection", err);
-		return res.status(500).json({ error: err?.message ?? "Unknown error" });
-  }
-})
-
 // Returns user by userID
 router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 	try {
@@ -298,6 +289,12 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
 			}
 			await collection.insertOne(tradeDocument);
+
+			const itemCollection = db.collection("Item");
+			if (!itemCollection) {
+				return res.status(500).json({ error: `No Item collection available in ${dbName}, please init database` });
+			}
+			await itemCollection.insertOne({itemID: itemID, inventoryID: "inv" + senderID.replace("user", ""), amount: 1, itemName: "Cool Item"})
 		}
 
 		return res.json({ data: tradeDocument });
@@ -305,6 +302,39 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 		console.error("Failed to insert trade into all databases", err);
 		return res.status(500).json({ error: err?.message ?? "Unknown error" });
 	}
+})
+
+router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
+	try {
+    	const { tradeID } = req.params;
+		const dbNames = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
+		for (const dbName of dbNames) {
+			const db = connections[dbName];
+			if (!db) {
+				return res.status(500).json({ error: `No database connection available for ${dbName}` });
+			}
+			const collection = db.collection("Trade");
+			if (!collection) {
+				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
+			}
+			let trade = await collection.findOne({"tradeID": tradeID});
+			if (trade) {
+				const itemCollection = db.collection("Item");
+				if (!itemCollection) {
+					return res.status(500).json({ error: `No Item collection available in ${dbName}, please init database` });
+				}
+				// Change item from sender's inventory to receiver's inventory
+				await itemCollection.updateOne(
+					{inventoryID: "inv" + trade.senderID.replace("user", ""),  itemID: trade.itemID},
+					{$set: {inventoryID: "inv" + trade.receiverID.replace("user", "")}}
+				);
+			}
+		}
+		return res.json({ data: { success: true, tradeID: tradeID } } );
+  	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+  }
 })
 
 export default router

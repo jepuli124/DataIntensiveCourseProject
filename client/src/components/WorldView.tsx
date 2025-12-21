@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import World from "./World";
+import type { chunk } from "../interfaces/chunk";
+
 
 interface incomingParams {
     url?: string
@@ -7,7 +9,7 @@ interface incomingParams {
 
 const WorldView: React.FC<incomingParams> = ({ url }) => {
 
-    const [world, setWorld] = useState<unknown | undefined>(undefined)
+    const [world, setWorld] = useState<chunk[] | undefined>(undefined)
     useEffect(() => {
         const abortCtrl: AbortController = new AbortController()
         const fetchData = async () => {
@@ -30,7 +32,7 @@ const WorldView: React.FC<incomingParams> = ({ url }) => {
     
     return (
         <div>
-            <World world={world}></World>
+            {world ? <World worldChunks={world}></World> : <></>}
         </div>
     )
 }

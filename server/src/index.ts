@@ -30,7 +30,6 @@ router.get('/api/databases', async (req: Request, res: Response) => {
 // GET /api/tables
 // Returns an array of collection names in the currently connected MongoDB database.
 router.get('/api/tables', async (req: Request, res: Response) => {
-
 	// Get the collections. Because the databases are homogenous all of them have same collections.
 	// Due to this we can use statically the GameDBRegion1, we know that this is not the best but we are going with it!
 	try {
@@ -54,36 +53,40 @@ router.get('/api/tables', async (req: Request, res: Response) => {
 // GET /api/:database/:table
 // Returns an array of items in the correct database and the collection
 router.get("/api/databases/:database/:table", async (req: Request, res: Response) => {
-  try {
-    const { database, table } = req.params;
+	try {
+		const { database, table } = req.params;
 
-    // Check if the database exists
-    const dbConnection = connections[database];
-    if (!dbConnection) {
-		console.error("Invalid database name:", database);
-      return res.status(400).json({ error: "Invalid database name" });
-    }
+		// Check if the database exists
+		const dbConnection = connections[database];
+		if (!dbConnection) {
+			console.error("Invalid database name:", database);
+		return res.status(400).json({ error: "Invalid database name" });
+		}
 
-    // Get the collection
-    const collection = dbConnection.collection(table);
+		// Get the collection
+		const collection = dbConnection.collection(table);
 
-    // Fetch all documents (you can limit or filter if needed)
-    const documents = await collection.find({}).toArray();
+		// Fetch all documents (you can limit or filter if needed)
+		const documents = await collection.find({}).toArray();
 
-    return res.json({ data: documents });
-  } catch (err: any) {
-    console.error("Failed to fetch collection", err);
-    return res.status(500).json({ error: err?.message ?? "Unknown error" });
-  }
+		return res.json({ data: documents });
+	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
 });
 
 // Returns user by userID
+// GET /api/user/:userID
+// Returns an JSON which has the user information needed in front-end.
 router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 	try {
+		// Read params (log also)
     	const { userID } = req.params;
 		console.log("params:", req.params);
 		console.log("connections:", Object.keys(connections));
 
+		// Again fixed database because of prototyping and homogenous database system
 		console.log(connections);
 		const db = connections["GameDBRegion1"]
 		console.log(db);
@@ -106,6 +109,8 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
   }
 });
 
+// GET /api/world/:worldID
+// Returns an JSON which has the user information needed in front-end.
 // Returns world by worldID
 router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	try {
@@ -116,10 +121,12 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
+		// Find the correct collection
 		const collection = db.collection("World");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
+		// Find the correct world and return it.
 		const worldDocument = await collection.findOne({"worldID": worldID});
 		return res.json({ data: worldDocument });
 	} catch (err: any) {
@@ -150,23 +157,27 @@ router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>
 	}
 })
 
+// creates the world
 router.get("/api/generateworld", async (req: Request, res: Response) => {
-  try {
-    const regions = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
-    const results = [];
+	try {
+	// Regions to homogenously save the new worlds in all dbs
+	const regions = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
+	const results = [];
 	let i = 0;
 
-    for (const region of regions) {
+	for (const region of regions) {
 		i = i + 1;
 		const database = connections[region];
 		if (!database) {
 			throw new Error(`Missing DB connection: ${region}`);
 		}
 
+		// Init collections
 		const worldCollection = database.collection("World");
 		const chunkCollection = database.collection("WorldChunk");
 		const blockCollection = database.collection("Block")
 
+		// Create ID for new world
 		const intForID = await worldCollection.countDocuments()
 		const worldID = "world" + (intForID+1)
 
@@ -207,9 +218,9 @@ router.get("/api/generateworld", async (req: Request, res: Response) => {
 		}
 		}
 
+		// Insert all chunks and blocks to dbs
 		await chunkCollection.insertMany(chunks);
 		await blockCollection.insertMany(blocks);
-
 
 		results.push({
 			region,
@@ -219,6 +230,7 @@ router.get("/api/generateworld", async (req: Request, res: Response) => {
 		});
 		}
 
+		// Return confirmation
 		return res.json({
 			success: true,
 			worldsCreated: results
@@ -230,28 +242,33 @@ router.get("/api/generateworld", async (req: Request, res: Response) => {
 	}
 });
 
+// Get all blocks insie chunk
 router.get("/api/worldblocks/:ChunkID", async (req: Request, res: Response) => {
 	try {
-			const { ChunkID } = req.params;
-			const db = connections["GameDBRegion1"]
+		// Params and make connection. Homogenous so fixed database
+		const { ChunkID } = req.params;
+		const db = connections["GameDBRegion1"]
 
-			// Error check
-			if (!db) {
-				return res.status(500).json({ error: 'No database connection available' })
-			}
-			const collection = db.collection("Block");
-			if (!collection) {
-				return res.status(500).json({error: "No no"})
-			}
+		// Error check
+		if (!db) {
+			return res.status(500).json({ error: 'No database connection available' })
+		}
+		// Find the correct collection
+		const collection = db.collection("Block");
+		if (!collection) {
+			return res.status(500).json({error: "No no"})
+		}
 
-			const blockList = await collection.find({"chunkID": ChunkID}).toArray();
-
-			return res.json({ data: blockList });
+		// Find all of the blocks with the id, and save as an array
+		const blockList = await collection.find({"chunkID": ChunkID}).toArray();
+		
+		// Return said blocks to front-end so it can render them
+		return res.json({ data: blockList });
 		} catch (err: any) {
-			console.error("Failed to fetch collection", err);
-			return res.status(500).json({ error: err?.message ?? "Unknown error" });
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
 	}
-	});
+});
 
 
 

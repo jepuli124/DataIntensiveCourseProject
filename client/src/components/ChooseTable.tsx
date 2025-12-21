@@ -42,7 +42,7 @@ const ChooseTable: React.FC<incomingParams> = ({updateTable, fetchTables = false
   return (
     <div>
       {tableNames.map((name: string, index: number) => 
-        <div key={index} onClick={() => updateTableTrigger(index, name)}>
+        <div key={index} style={{background: "#29333aff", margin:"5px", border:"solid"}} onClick={() => updateTableTrigger(index, name)}>
           <h2>{name}</h2>
           {target == index ? <><p>This has been chosen</p></>: <></>}
         </div>

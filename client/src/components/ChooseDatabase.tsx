@@ -36,7 +36,7 @@ const ChooseDatabase: React.FC<incomingParams> = ({updateDatabase}) => { //compo
   return (
     <div>
       {databaseNames.map((name: string, index: number) => 
-        <div key={index} onClick={() => updateDatabaseTrigger(index, name)}>
+        <div style={{background: "#29333aff", margin:"5px", border:"solid"}} key={index} onClick={() => updateDatabaseTrigger(index, name)}>
           <h2>{name}</h2>
           {target == index ? <><p>This has been chosen</p></>: <></>}
         </div>

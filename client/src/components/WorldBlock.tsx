@@ -23,6 +23,7 @@ const WorldBlock: React.FC<incomingParams> = ({ ChunkID }) => {
             }
             
             const parcedData  = await incomingData.json()
+            console.log("block", parcedData)
             setBlockList(parcedData.data)
             
         }

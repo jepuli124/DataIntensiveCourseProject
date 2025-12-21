@@ -49,27 +49,27 @@ const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that do
     }, [url])
 
     return (
-        <div style={{border: "1px black"}}>
+        <div >
             {itemList?.map((item, index) => (
-                <div key={index}> {/* If a value exists it is shown, otherwise ignore*/}
-                    {item.id ? <p>{item.id}</p> : <></>}
-                    {item.regionID ? <p>{item.regionID}</p> : <></>}
-                    {item.itemID ? <p>{item.itemID}</p> : <></>}
-                    {item.itemName ? <p>{item.itemName}</p> : <></>}
-                    {item.amount ? <p>{item.amount}</p> : <></>}
-                    {item.inventoryID ? <p>{item.inventoryID}</p> : <></>}
-                    {item.userID ? <p>{item.userID}</p> : <></>}
-                    {item.inventoryName ? <p>{item.inventoryName}</p> : <></>}
-                    {item.username ? <p>{item.username}</p> : <></>}
-                    {item.passwordHash ? <p>{item.passwordHash}</p> : <></>}
-                    {item.worldID ? <p>{item.worldID}</p> : <></>}
-                    {item.worldName ? <p>{item.worldName}</p> : <></>}
-                    {item.worldType ? <p>{item.worldType}</p> : <></>}
-                    {item.chunkID ? <p>{item.chunkID}</p> : <></>}
-                    {item.coordinate_X ? <p>{item.coordinate_X}</p> : <></>}
-                    {item.coordinate_Y ? <p>{item.coordinate_Y}</p> : <></>}
-                    {item.chunk_coordinate_x ? <p>{item.chunk_coordinate_x}</p> : <></>}
-                    {item.chunk_coordinate_y ? <p>{item.chunk_coordinate_y}</p> : <></>}
+                <div key={index} style={{background: "#29333aff", border:"solid", margin:"5px"}}> {/* If a value exists it is shown, otherwise ignore*/}
+                    {item.id ? <p>Id: {item.id}</p> : <></>}
+                    {item.regionID ? <p>Region id: {item.regionID}</p> : <></>}
+                    {item.itemID ? <p>Item id: {item.itemID}</p> : <></>}
+                    {item.itemName ? <p>Name: {item.itemName}</p> : <></>}
+                    {item.amount ? <p>amount: {item.amount}</p> : <></>}
+                    {item.inventoryID ? <p>inventory id: {item.inventoryID}</p> : <></>}
+                    {item.userID ? <p>User Id: {item.userID}</p> : <></>}
+                    {item.inventoryName ? <p>inventory name: {item.inventoryName}</p> : <></>}
+                    {item.username ? <p>Name: {item.username}</p> : <></>}
+                    {item.passwordHash ? <p>Password: {item.passwordHash}</p> : <></>}
+                    {item.worldID ? <p>World id: {item.worldID}</p> : <></>}
+                    {item.worldName ? <p>Name: {item.worldName}</p> : <></>}
+                    {item.worldType ? <p>Type: {item.worldType}</p> : <></>}
+                    {item.chunkID ? <p>Chunk: {item.chunkID}</p> : <></>}
+                    {item.coordinate_X ? <p>x: {item.coordinate_X}</p> : <></>}
+                    {item.coordinate_Y ? <p>y: {item.coordinate_Y}</p> : <></>}
+                    {item.chunk_coordinate_x ? <p>x: {item.chunk_coordinate_x}</p> : <></>}
+                    {item.chunk_coordinate_y ? <p>y: {item.chunk_coordinate_y}</p> : <></>}
                 </div>
             ))}
             {itemList ? itemList.length <= 0 ? <p> It seems that there isn't items to be retrieved.\nRemember to run the database initization program</p> : <></> : <></>}

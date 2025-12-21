@@ -12,7 +12,7 @@ const WorldView: React.FC<incomingParams> = ({  }) => { // stars building world 
 
     const [world, setWorld] = useState<chunk[] | undefined>(undefined)
     const params = useParams()
-    const url = params.worldid // collects the world id from url
+    const url = '/api/chunks/' + params.worldid // collects the world id from url
 
     useEffect(() => {
         const abortCtrl: AbortController = new AbortController()
@@ -26,6 +26,7 @@ const WorldView: React.FC<incomingParams> = ({  }) => { // stars building world 
             }
             
             const parcedData  = await incomingData.json()
+            console.log(parcedData)
             setWorld(parcedData.data)
         }
 

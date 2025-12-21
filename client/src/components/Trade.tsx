@@ -11,6 +11,7 @@ interface incomingParams {
 const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
     const [user1Items, setUser1Items] = useState<IUserItem[]>([])
     const [user2Items, setUser2Items] = useState<IUserItem[]>([])
+    const [refersh, setRefresh] = useState<number>(0)
 
 
     useEffect(() => {
@@ -41,7 +42,7 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
         }
         fetchData()
         return () => abortCtrl.abort()
-    }, [url1, url2, tradeID])
+    }, [url1, url2, tradeID, refersh])
 
     const confirmTrade = async () => { // confirm trade and makes request for backend to change the owner of the items.
         const incomingData = await fetch('/api/confirmtrade/' + tradeID)
@@ -49,13 +50,15 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
                 console.log("fetch failed")
             return
             }
+            setRefresh(refersh => refersh + 1) // causes refresh to see the new inventories
+
     }
 
   return (
     <div>
         <div style={{display: "flex", justifyContent: "space-between"}}> {/* shows to inventories*/}
-            <TradeUserPart mirrored={false} userItems={user1Items}></TradeUserPart>
-            <TradeUserPart mirrored={true} userItems={user2Items}></TradeUserPart>
+            <TradeUserPart refresh={refersh} mirrored={false} userItems={user1Items}></TradeUserPart>
+            <TradeUserPart  refresh={refersh} mirrored={true} userItems={user2Items}></TradeUserPart>
         </div>
         <button onClick={() => confirmTrade()}>TRADE</button>
     </div>

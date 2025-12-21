@@ -289,7 +289,34 @@ router.get("/api/worldBlocks/:ChunkID", async (req: Request, res: Response) => {
 
 		// Find all of the blocks with the id, and save as an array
 		const blockList: IBlock[] = await collection.find({"chunkID": ChunkID}).toArray() as IBlock[];
-		
+		console.log("blocklist", blockList)
+		// Return said blocks to front-end so it can render them
+		return res.json({ data: blockList });
+		} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
+});
+
+router.get("/api/chunks/:worldID", async (req: Request, res: Response) => {
+	try {
+		// Params and make connection. Homogenous so fixed database
+		const { worldID }: any = req.params;
+		const db: mongoose.Connection = connections["GameDBRegion1"]
+
+		// Error check
+		if (!db) {
+			return res.status(500).json({ error: 'No database connection available' })
+		}
+		// Find the correct collection
+		const collection: mongoose.Collection = db.collection("WorldChunk");
+		if (!collection) {
+			return res.status(500).json({error: "No no"})
+		}
+
+		// Find all of the blocks with the id, and save as an array
+		const blockList: IWorldChunk[] = await collection.find({"worldID": worldID}).toArray() as IWorldChunk[];
+		//console.log(blockList)
 		// Return said blocks to front-end so it can render them
 		return res.json({ data: blockList });
 		} catch (err: any) {

@@ -9,10 +9,10 @@ interface incomingParams {
 
 const ChooseTable: React.FC<incomingParams> = ({updateTable, fetchTables = false}) => {
   
-  const[tableNames, setTableNames] = useState<string[]>([])
-  const[target, setTarget] = useState<number | undefined>(undefined)
+  const[tableNames, setTableNames] = useState<string[]>([]) //table names from database stored here
+  const[target, setTarget] = useState<number | undefined>(undefined) // selected table
 
-  useEffect(() => {
+  useEffect(() => { //fetch useEffect for reduced fetching
       const abortCtrl: AbortController = new AbortController()
       const fetchTable = async () => { 
           if(!fetchTables){
@@ -31,7 +31,7 @@ const ChooseTable: React.FC<incomingParams> = ({updateTable, fetchTables = false
       return () => abortCtrl.abort()
       }, [updateTable])
   
-    const updateTableTrigger = (index: number, name: string) => { // this is just to make the return prettier
+    const updateTableTrigger = (index: number, name: string) => { // function to select table, this is just to make the return prettier
       if(updateTable)
         { 
           updateTable(name)

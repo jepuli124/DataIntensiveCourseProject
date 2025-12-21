@@ -35,9 +35,9 @@ const WorldBlock: React.FC<incomingParams> = ({ ChunkID }) => {
         <div style={{ background: 'blue'}}>
             {blockList.map((block: block, index: number) => (
                 <div key={index}>
-                    {block.itemID == "1" ? <img src="brown.png"></img> : <></> }
-                    {block.itemID == "2" ? <img src="green.png"></img> : <></> }
-                    {block.itemID == "3" ? <img src="white.png"></img> : <></> }
+                    {block.itemID == "item1" ? <img src="brown.png"></img> : <></> }
+                    {block.itemID == "item2" ? <img src="green.png"></img> : <></> }
+                    {block.itemID == "item3" ? <img src="white.png"></img> : <></> }
                 </div>
             ))}
         </div>

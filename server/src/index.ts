@@ -2,6 +2,9 @@ import mongoose from 'mongoose'
 import {Request, Response, Router} from "express"
 import { connections } from "../server"
 import { log } from 'console'
+import {IWorldChunk, WorldChunk} from "./models/WorldChunk"
+import {IWorld, World} from "./models/World"
+import {IBlock, Block} from "./models/Block"
 
 const router: Router = Router()
 
@@ -110,5 +113,109 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 		return res.status(500).json({ error: err?.message ?? "Unknown error" });
   }
 });
+
+router.get("/api/generateworld", async (req: Request, res: Response) => {
+  try {
+    const regions = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
+    const results = [];
+	let i = 0;
+
+    for (const region of regions) {
+		i = i + 1;
+		const database = connections[region];
+		if (!database) {
+			throw new Error(`Missing DB connection: ${region}`);
+		}
+
+		const worldCollection = database.collection("World");
+		const chunkCollection = database.collection("WorldChunk");
+		const blockCollection = database.collection("Block")
+
+		const intForID = await worldCollection.countDocuments()
+		const worldID = "world" + (intForID+1)
+
+		// Create world document
+		await worldCollection.insertOne({
+			userID: "user1",
+			worldID: worldID,
+			regionID: "region1",
+			worldName: "Mikkola",
+			worldType: "Desert"
+		});
+		
+		const chunks: IWorldChunk[] = [];
+		const blocks: IBlock[] = [];
+
+		for (let x = 0; x < 8; x++) {
+		for (let y = 0; y < 8; y++) {
+			const chunkID = `chunk_${worldID}_${x}_${y}`;
+			// Create chunk
+			chunks.push({
+			chunkID,
+			worldID,
+			coordinate_X: x,
+			coordinate_y: y
+			} as IWorldChunk);
+
+			// Create blocks inside this chunk
+			for (let z = 0; z < 8; z++) {
+			for (let v = 0; v < 8; v++) {
+				blocks.push({
+				itemID: "item" + (Math.floor(Math.random() * 3) + 1),
+				chunkID,
+				chunk_coordinate_x: z,
+				chunk_coordinate_y: v
+				} as IBlock);
+			}
+			}
+		}
+		}
+
+		await chunkCollection.insertMany(chunks);
+		await blockCollection.insertMany(blocks);
+
+
+		results.push({
+			region,
+			worldID,
+			chunksCreated: chunks.length,
+			blocksCreated: blocks.length
+		});
+		}
+
+		return res.json({
+			success: true,
+			worldsCreated: results
+		});
+
+	} catch (err: any) {
+		console.error("World generation failed", err);
+		return res.status(500).json({ error: err.message ?? "Unknown error" });
+	}
+});
+
+router.get("/api/worldblocks/:ChunkID", async (req: Request, res: Response) => {
+	try {
+			const { ChunkID } = req.params;
+			const db = connections["GameDBRegion1"]
+
+			// Error check
+			if (!db) {
+				return res.status(500).json({ error: 'No database connection available' })
+			}
+			const collection = db.collection("Block");
+			if (!collection) {
+				return res.status(500).json({error: "No no"})
+			}
+
+			const blockList = await collection.find({"chunkID": ChunkID}).toArray();
+
+			return res.json({ data: blockList });
+		} catch (err: any) {
+			console.error("Failed to fetch collection", err);
+			return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
+	});
+
 
 export default router

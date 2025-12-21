@@ -99,7 +99,7 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 		}
 		const collection = db.collection("User");
 		if (!collection) {
-			return res.status(500).json({error: "No no"})
+			return res.status(500).json({error: "No collection available"})
 		}
 
 		const userDocument = await collection.findOne({"userID": userID});
@@ -109,6 +109,27 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 		console.error("Failed to fetch collection", err);
 		return res.status(500).json({ error: err?.message ?? "Unknown error" });
   }
+});
+
+router.get("/api/world/:wordID", async (req: Request, res: Response) =>{
+	try {
+		const { worldID } = req.params;
+		const db = connections["GameDBRegion1"]
+		
+		// Error check
+		if (!db) {
+			return res.status(500).json({ error: 'No database connection available' })
+		}
+		const collection = db.collection("World");
+		if (!collection) {
+			return res.status(500).json({error: "No collection available"})
+		}
+		const worldDocument = await collection.findOne({"worldID": worldID});
+		return res.json({ data: worldDocument });
+	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
 });
 
 export default router

@@ -304,7 +304,7 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 	}
 })
 
-router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
+router.get("/api/confirmTrade/:tradeID", async (req:Request, res:Response) => {
 	try {
     	const { tradeID } = req.params;
 		const dbNames = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];

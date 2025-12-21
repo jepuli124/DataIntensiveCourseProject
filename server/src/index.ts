@@ -50,13 +50,14 @@ router.get('/api/tables', async (req: Request, res: Response) => {
 
 // GET /api/:database/:table
 // Returns an array of items in the correct database and the collection
-router.get("/api/:database/:table", async (req: Request, res: Response) => {
+router.get("/api/databases/:database/:table", async (req: Request, res: Response) => {
   try {
     const { database, table } = req.params;
 
     // Check if the database exists
     const dbConnection = connections[database];
     if (!dbConnection) {
+		console.error("Invalid database name:", database);
       return res.status(400).json({ error: "Invalid database name" });
     }
 
@@ -82,7 +83,7 @@ router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
   }
 })
 
-router.get("/api/user/:user", async (req: Request, res: Response) =>{
+router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 	try {
     	const { userID } = req.params;
 		console.log("params:", req.params);

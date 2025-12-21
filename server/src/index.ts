@@ -17,7 +17,7 @@ router.get('/api/databases', async (req: Request, res: Response) => {
 	// List all databases.
 	try {
 		// Use the database keys. They are named same as the database names are.
-		const db: any = Object.keys(connections)
+		const db: string[] = Object.keys(connections)
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
@@ -33,7 +33,7 @@ router.get('/api/tables', async (req: Request, res: Response) => {
 	// Get the collections. Because the databases are homogenous all of them have same collections.
 	// Due to this we can use statically the GameDBRegion1, we know that this is not the best but we are going with it!
 	try {
-		const db: any = connections["GameDBRegion1"]
+		const db: mongoose.Connection = connections["GameDBRegion1"]
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
@@ -57,17 +57,17 @@ router.get("/api/databases/:database/:table", async (req: Request, res: Response
 		const { database, table }: any = req.params;
 
 		// Check if the database exists
-		const dbConnection: any = connections[database];
+		const dbConnection: mongoose.Connection = connections[database];
 		if (!dbConnection) {
 			console.error("Invalid database name:", database);
 		return res.status(400).json({ error: "Invalid database name" });
 		}
 
 		// Get the collection
-		const collection: any = dbConnection.collection(table);
+		const collection: mongoose.Collection = dbConnection.collection(table);
 
 		// Fetch all documents (you can limit or filter if needed)
-		const documents: string[] = await collection.find({}).toArray();
+		const documents: any = await collection.find({}).toArray();
 
 		return res.json({ data: documents });
 	} catch (err: any) {
@@ -88,14 +88,14 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 
 		// Again fixed database because of prototyping and homogenous database system
 		console.log(connections);
-		const db: any = connections["GameDBRegion1"]
+		const db: mongoose.Connection = connections["GameDBRegion1"]
 		console.log(db);
 		
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
-		const collection: any = db.collection("User");
+		const collection: mongoose.Collection = db.collection("User");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
@@ -115,14 +115,14 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	try {
 		const { worldID }: any = req.params;
-		const db: any = connections["GameDBRegion1"]
+		const db: mongoose.Connection = connections["GameDBRegion1"]
 		
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
 		// Find the correct collection
-		const collection: any = db.collection("World");
+		const collection: mongoose.Collection = db.collection("World");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
@@ -139,13 +139,13 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>{
 	try {
 		const { inventoryID }: any = req.params;
-		const db: any = connections["GameDBRegion1"]
+		const db: mongoose.Connection = connections["GameDBRegion1"]
 		
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
-		const collection: any = db.collection("Inventory");
+		const collection: mongoose.Collection = db.collection("Inventory");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
@@ -167,15 +167,15 @@ router.get("/api/generateWorld", async (req: Request, res: Response) => {
 
 	for (const region of regions) {
 		i = i + 1;
-		const database: any = connections[region];
+		const database: mongoose.Connection = connections[region];
 		if (!database) {
 			throw new Error(`Missing DB connection: ${region}`);
 		}
 
 		// Init collections
-		const worldCollection: any = database.collection("World");
-		const chunkCollection: any = database.collection("WorldChunk");
-		const blockCollection: any = database.collection("Block")
+		const worldCollection: mongoose.Collection = database.collection("World");
+		const chunkCollection: mongoose.Collection = database.collection("WorldChunk");
+		const blockCollection: mongoose.Collection = database.collection("Block")
 
 		// Create ID for new world
 		const intForID: number = await worldCollection.countDocuments()
@@ -247,20 +247,20 @@ router.get("/api/worldBlocks/:ChunkID", async (req: Request, res: Response) => {
 	try {
 		// Params and make connection. Homogenous so fixed database
 		const { ChunkID }: any = req.params;
-		const db: any = connections["GameDBRegion1"]
+		const db: mongoose.Connection = connections["GameDBRegion1"]
 
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
 		// Find the correct collection
-		const collection: any = db.collection("Block");
+		const collection: mongoose.Collection = db.collection("Block");
 		if (!collection) {
 			return res.status(500).json({error: "No no"})
 		}
 
 		// Find all of the blocks with the id, and save as an array
-		const blockList: string[] = await collection.find({"chunkID": ChunkID}).toArray();
+		const blockList: any = await collection.find({"chunkID": ChunkID}).toArray();
 		
 		// Return said blocks to front-end so it can render them
 		return res.json({ data: blockList });
@@ -297,17 +297,17 @@ router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 
 		// Insert the tradeDocument into all databases
 		for (const dbName of dbNames) {
-			const db: any = connections[dbName];
+			const db: mongoose.Connection = connections[dbName];
 			if (!db) {
 				return res.status(500).json({ error: `No database connection available for ${dbName}` });
 			}
-			const collection: any = db.collection("Trade");
+			const collection: mongoose.Collection = db.collection("Trade");
 			if (!collection) {
 				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
 			}
 			await collection.insertOne(tradeDocument);
 
-			const itemCollection: any = db.collection("Item");
+			const itemCollection: mongoose.Collection = db.collection("Item");
 			if (!itemCollection) {
 				return res.status(500).json({ error: `No Item collection available in ${dbName}, please init database` });
 			}
@@ -326,11 +326,11 @@ router.get("/api/confirmTrade/:tradeID", async (req:Request, res:Response) => {
     	const { tradeID }: any = req.params;
 		const dbNames: string[] = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
 		for (const dbName of dbNames) {
-			const db: any = connections[dbName];
+			const db: mongoose.Connection = connections[dbName];
 			if (!db) {
 				return res.status(500).json({ error: `No database connection available for ${dbName}` });
 			}
-			const collection: any = db.collection("Trade");
+			const collection: mongoose.Collection = db.collection("Trade");
 			if (!collection) {
 				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
 			}

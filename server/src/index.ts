@@ -77,15 +77,19 @@ router.get("/api/databases/:database/:table", async (req: Request, res: Response
   }
 });
 
+// GET /api/confirmtrade/:tradeID
+// Gets a tradeID of the new trade. Also gets the items of users. With these confirms the trade and makes correct item placement and displacement.
 router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
 	try {
-    	const tradeID = req.params;
+    	const { tradeID } = req.params;
   	} catch (err: any) {
 		console.error("Failed to fetch collection", err);
 		return res.status(500).json({ error: err?.message ?? "Unknown error" });
   }
 })
 
+// GET /api/user/:userID
+// Returns an JSON which has the user information needed in front-end.
 router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 	try {
     	const { userID } = req.params;
@@ -114,6 +118,8 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
   }
 });
 
+// GET /api/world/:worldID
+// Returns an JSON which has the user information needed in front-end.
 router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	try {
 		const { worldID } = req.params;

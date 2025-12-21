@@ -111,7 +111,7 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
   }
 });
 
-router.get("/api/world/:wordID", async (req: Request, res: Response) =>{
+router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	try {
 		const { worldID } = req.params;
 		const db = connections["GameDBRegion1"]

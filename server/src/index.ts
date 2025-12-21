@@ -88,6 +88,7 @@ router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
   }
 })
 
+// Returns user by userID
 // GET /api/user/:userID
 // Returns an JSON which has the user information needed in front-end.
 router.get("/api/user/:userID", async (req: Request, res: Response) =>{
@@ -106,7 +107,7 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 		}
 		const collection = db.collection("User");
 		if (!collection) {
-			return res.status(500).json({error: "No collection available"})
+			return res.status(500).json({error: "No collection available, please init database"})
 		}
 
 		const userDocument = await collection.findOne({"userID": userID});
@@ -120,6 +121,7 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 
 // GET /api/world/:worldID
 // Returns an JSON which has the user information needed in front-end.
+// Returns world by worldID
 router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	try {
 		const { worldID } = req.params;
@@ -131,7 +133,7 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 		}
 		const collection = db.collection("World");
 		if (!collection) {
-			return res.status(500).json({error: "No collection available"})
+			return res.status(500).json({error: "No collection available, please init database"})
 		}
 		const worldDocument = await collection.findOne({"worldID": worldID});
 		return res.json({ data: worldDocument });
@@ -141,6 +143,7 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	}
 });
 
+// Returns inventory by inventoryID
 router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>{
 	try {
 		const { inventoryID } = req.params;
@@ -152,7 +155,7 @@ router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>
 		}
 		const collection = db.collection("Inventory");
 		if (!collection) {
-			return res.status(500).json({error: "No collection available"})
+			return res.status(500).json({error: "No collection available, please init database"})
 		}
 		const inventoryDocument = await collection.findOne({"inventoryID": inventoryID});
 		return res.json({ data: inventoryDocument });
@@ -265,5 +268,49 @@ router.get("/api/worldblocks/:ChunkID", async (req: Request, res: Response) => {
 	}
 	});
 
+
+
+// Creates a trade between two random users (for prototype) and returns to the user
+router.get("/api/tradeUsers", async (req: Request, res: Response) => {
+	try {
+		const dbNames = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
+
+		const tradeID = "trade" + Date.now();
+		const senderID = "user" + (Math.floor(Math.random() * 30) + 1);
+
+		// This is to prevent sender and receiver being the same user
+		let receiverID;
+		do {
+			receiverID = "user" + (Math.floor(Math.random() * 30) + 1);
+		} while (receiverID === senderID);
+
+		const itemID = "item" + (Math.floor(Math.random() * 100) + 1);
+
+		const tradeDocument = {
+			tradeID: tradeID,
+			senderID: senderID,
+			receiverID: receiverID,
+			itemID: itemID
+		};
+
+		// Insert the tradeDocument into all databases
+		for (const dbName of dbNames) {
+			const db = connections[dbName];
+			if (!db) {
+				return res.status(500).json({ error: `No database connection available for ${dbName}` });
+			}
+			const collection = db.collection("Trade");
+			if (!collection) {
+				return res.status(500).json({ error: `No collection available in ${dbName}, please init database` });
+			}
+			await collection.insertOne(tradeDocument);
+		}
+
+		return res.json({ data: tradeDocument });
+	} catch (err: any) {
+		console.error("Failed to insert trade into all databases", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+	}
+})
 
 export default router

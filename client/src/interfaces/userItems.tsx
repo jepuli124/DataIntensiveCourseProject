@@ -6,4 +6,4 @@ interface IUserItem extends Document{
     itemName: string
 }
 
-export default IUserItem
+export type { IUserItem }

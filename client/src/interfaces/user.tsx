@@ -6,4 +6,4 @@ interface IUser extends Document{
     inventoryID: string
 }
 
-export default IUser
+export type { IUser }

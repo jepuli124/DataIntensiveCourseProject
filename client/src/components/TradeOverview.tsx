@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Trade from './Trade'
-import IUser from '../interfaces/user'
+import type { IUser } from '../interfaces/user'
 
 interface tradeInformation {
     user1: IUser,
@@ -29,10 +29,7 @@ const TradeOverview: React.FC = () => {
   
     return (
     <div>
-        {setupData ? <><Trade incomingParams={
-            '/api/inventory/' + setupData.user1.inventoryID,
-            '/api/inventory/' + setupData.user2.inventoryID,
-            setupData.TradeID} ></Trade></> : <></>}
+        {setupData ? <><Trade url1={'/api/inventory/' + setupData.user1.inventoryID} url2={'/api/inventory/' + setupData.user2.inventoryID} tradeID={setupData.tradeID} ></Trade></> : <></>}
     </div>
   )
 }

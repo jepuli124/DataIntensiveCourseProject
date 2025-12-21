@@ -27,7 +27,7 @@ const AllViewTop: React.FC = () => { //over head function that transfare data be
         setDatabase(databaseChange)
         setShowTables(true)
       }}></ChooseDatabase>
-      <ChooseTable updateTable={(tableChange: string) => setTable(tableChange), showTable}></ChooseTable>
+      <ChooseTable updateTable={(tableChange: string) => setTable(tableChange)} fetchTables={showTable}></ChooseTable>
       <ViewSearch url={url}></ViewSearch>
       </div>
       <div>

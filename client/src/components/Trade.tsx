@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import TradeUserPart from './TradeUserPart'
-import IUserItem from '../interfaces/userItems'
+import type { IUserItem } from '../interfaces/userItems'
 
 interface incomingParams {
     url1?: string,
@@ -53,8 +53,8 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
   return (
     <div>
         <div style={{display: "flex"}}>
-            <TradeUserPart incomingParams={false, url1}></TradeUserPart>
-            <TradeUserPart incomingParams={true, url2}></TradeUserPart>
+            <TradeUserPart mirrored={false} userItems={user1Items}></TradeUserPart>
+            <TradeUserPart mirrored={true} userItems={user2Items}></TradeUserPart>
         </div>
         <button onClick={() => confirmTrade()}>TRADE</button>
     </div>

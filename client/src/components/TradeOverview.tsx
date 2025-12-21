@@ -8,7 +8,7 @@ interface tradeInformation {
     tradeID: string
 }
 
-const TradeOverview: React.FC = () => {
+const TradeOverview: React.FC = () => { //Request dummy trade for showcase and passes relevant data to below
     const [setupData, setSetupData] = useState< tradeInformation| undefined>(undefined)
     useEffect(() => {
           const abortCtrl: AbortController = new AbortController()

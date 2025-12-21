@@ -27,7 +27,7 @@ interface unknownServerObject{ //because we don't know what server exactly sends
 
 const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that doesn't know what it fetches or shows.
      
-    const [itemList, setItemlist] = useState<unknownServerObject[] | undefined>(undefined)
+    const [itemList, setItemlist] = useState<unknownServerObject[] | undefined>(undefined) // stores items from search fetch
     useEffect(() => {
         const abortCtrl: AbortController = new AbortController()
         const fetchData = async () => {
@@ -51,7 +51,7 @@ const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that do
     return (
         <div>
             {itemList?.map((item, index) => (
-                <div key={index}>
+                <div key={index}> {/* If a value exists it is shown, otherwise ignore*/}
                     {item.id ? <p>{item.id}</p> : <></>}
                     {item.regionID ? <p>{item.regionID}</p> : <></>}
                     {item.itemID ? <p>{item.itemID}</p> : <></>}

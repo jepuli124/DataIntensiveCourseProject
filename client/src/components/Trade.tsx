@@ -42,7 +42,7 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
         return () => abortCtrl.abort()
     }, [url1, url2, tradeID])
 
-    const confirmTrade = async () => {
+    const confirmTrade = async () => { // confirm trade and makes request for backend to change the owner of the items.
         const incomingData = await fetch('/api/confirmtrade/' + tradeID)
         if(!incomingData.ok){
                 console.log("fetch failed")
@@ -52,7 +52,7 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
 
   return (
     <div>
-        <div style={{display: "flex"}}>
+        <div style={{display: "flex"}}> {/* shows to inventories*/}
             <TradeUserPart mirrored={false} userItems={user1Items}></TradeUserPart>
             <TradeUserPart mirrored={true} userItems={user2Items}></TradeUserPart>
         </div>

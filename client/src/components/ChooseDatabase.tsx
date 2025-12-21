@@ -23,7 +23,7 @@ const ChooseDatabase: React.FC<incomingParams> = ({updateDatabase}) => { //compo
     }
     fetchDatabases()
     return () => abortCtrl.abort()
-    }, [])
+    }, [updateDatabase])
 
   const updateDatabaseTrigger = (index: number, name: string) => { // this is just to make the return prettier
     if(updateDatabase)

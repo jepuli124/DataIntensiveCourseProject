@@ -29,7 +29,7 @@ const ChooseTable: React.FC<incomingParams> = ({updateTable, fetchTables = false
       }
       fetchTable()
       return () => abortCtrl.abort()
-      }, [])
+      }, [updateTable])
   
     const updateTableTrigger = (index: number, name: string) => { // this is just to make the return prettier
       if(updateTable)

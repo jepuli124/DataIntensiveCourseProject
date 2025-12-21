@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import {Request, Response, Router} from "express"
 import { connections } from "../server"
+import { log } from 'console'
 
 const router: Router = Router()
 
@@ -28,6 +29,7 @@ router.get('/api/databases', async (req: Request, res: Response) => {
 router.get('/api/tables', async (req: Request, res: Response) => {
 
 	// Get the collections. Because the databases are homogenous all of them have same collections.
+	// Due to this we can use statically the GameDBRegion1, we know that this is not the best but we are going with it!
 	try {
 		const db = connections["GameDBRegion1"]
 		// Error check
@@ -68,6 +70,43 @@ router.get("/api/:database/:table", async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("Failed to fetch collection", err);
     return res.status(500).json({ error: err?.message ?? "Unknown error" });
+  }
+});
+
+router.get("/api/confirmtrade/:tradeID", async (req:Request, res:Response) => {
+	try {
+    	const tradeID = req.params;
+  	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
+  }
+})
+
+router.get("/api/user/:user", async (req: Request, res: Response) =>{
+	try {
+    	const { userID } = req.params;
+		console.log("params:", req.params);
+		console.log("connections:", Object.keys(connections));
+
+		console.log(connections);
+		const db = connections["GameDBRegion1"]
+		console.log(db);
+		
+		// Error check
+		if (!db) {
+			return res.status(500).json({ error: 'No database connection available' })
+		}
+		const collection = db.collection("User");
+		if (!collection) {
+			return res.status(500).json({error: "No no"})
+		}
+
+		const userDocument = await collection.findOne({"userID": userID});
+
+		return res.json({ data: userDocument });
+  	} catch (err: any) {
+		console.error("Failed to fetch collection", err);
+		return res.status(500).json({ error: err?.message ?? "Unknown error" });
   }
 });
 

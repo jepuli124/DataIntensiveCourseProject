@@ -6,10 +6,10 @@ interface incomingParams {
 
 const ChooseDatabase: React.FC<incomingParams> = ({updateDatabase}) => { //component that shows available databases and lets user choose which they target
 
-  const[databaseNames, setDatabaseNames] = useState<string[]>([])
-  const[target, setTarget] = useState<number | undefined>(undefined)
+  const[databaseNames, setDatabaseNames] = useState<string[]>([]) //names of the databases, come from backend
+  const[target, setTarget] = useState<number | undefined>(undefined) //selected database
 
-  useEffect(() => {
+  useEffect(() => { //fetch useEffect for reduced fetching
     const abortCtrl: AbortController = new AbortController()
     const fetchDatabases = async () => { 
         const incomingData = await fetch('/api/databases')
@@ -25,7 +25,7 @@ const ChooseDatabase: React.FC<incomingParams> = ({updateDatabase}) => { //compo
     return () => abortCtrl.abort()
     }, [updateDatabase])
 
-  const updateDatabaseTrigger = (index: number, name: string) => { // this is just to make the return prettier
+  const updateDatabaseTrigger = (index: number, name: string) => { // select target database, this is just to make the return prettier
     if(updateDatabase)
       { 
         updateDatabase(name)

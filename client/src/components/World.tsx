@@ -8,7 +8,7 @@ interface incomingParams {
 
 
 
-const World: React.FC<incomingParams> = ( { worldChunks: world } ) => {
+const World: React.FC<incomingParams> = ( { worldChunks: world } ) => { //shows blocks
 
     return (
         <div>

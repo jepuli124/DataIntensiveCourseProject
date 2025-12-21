@@ -7,7 +7,7 @@ interface incomingParams {
     url?: string
 }
 
-const WorldView: React.FC<incomingParams> = ({ url }) => {
+const WorldView: React.FC<incomingParams> = ({ url }) => { // stars building world by chopping world down to chunks from world data given by backend
 
     const [world, setWorld] = useState<chunk[] | undefined>(undefined)
     useEffect(() => {

@@ -6,7 +6,7 @@ interface incomingParams {
     userItems: IUserItem[]
 }
 
-const TradeUserPart: React.FC<incomingParams> = ({mirrored = false, userItems}) => {
+const TradeUserPart: React.FC<incomingParams> = ({mirrored = false, userItems}) => { // shows single user's inventory
     const alignment = mirrored ? "right" : "left" 
     return (
         <div style={{alignContent: alignment}}>

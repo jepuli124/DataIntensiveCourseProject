@@ -25,6 +25,7 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
             }
             
             const parcedData  = await incomingData.json()
+            console.log(url1, parcedData)
             setUser1Items(parcedData.data)
             
             if(!url2) return 
@@ -52,7 +53,7 @@ const Trade: React.FC<incomingParams> = ( { url1, url2, tradeID } ) => {
 
   return (
     <div>
-        <div style={{display: "flex"}}> {/* shows to inventories*/}
+        <div style={{display: "flex", justifyContent: "space-between"}}> {/* shows to inventories*/}
             <TradeUserPart mirrored={false} userItems={user1Items}></TradeUserPart>
             <TradeUserPart mirrored={true} userItems={user2Items}></TradeUserPart>
         </div>

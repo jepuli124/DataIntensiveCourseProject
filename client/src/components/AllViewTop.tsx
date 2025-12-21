@@ -12,7 +12,7 @@ const AllViewTop: React.FC = () => { //over head function that transfare data be
 
   const updateUrl = () => { // update url for the search
     if(table !== "none" && database !== "none"){
-      setUrl('/api/' + database.toString() + "/" + table)
+      setUrl('/api/databases/' + database.toString() + "/" + table)
       setUrlError(false)
     } else {
       setUrlError(true)
@@ -22,7 +22,7 @@ const AllViewTop: React.FC = () => { //over head function that transfare data be
 
   return (
     <div>
-      <div style={{display: 'flex'}}> 
+      <div style={{display: 'flex', alignContent: "center", justifyContent: "space-between"}}> 
       <ChooseDatabase updateDatabase={(databaseChange: string) => { 
         setDatabase(databaseChange)
         setShowTables(true)

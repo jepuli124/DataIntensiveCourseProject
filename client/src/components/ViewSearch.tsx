@@ -49,7 +49,7 @@ const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that do
     }, [url])
 
     return (
-        <div>
+        <div style={{border: "1px black"}}>
             {itemList?.map((item, index) => (
                 <div key={index}> {/* If a value exists it is shown, otherwise ignore*/}
                     {item.id ? <p>{item.id}</p> : <></>}
@@ -72,6 +72,8 @@ const ViewSearch: React.FC<incomingParams> = ({url}) => { // a component that do
                     {item.chunk_coordinate_y ? <p>{item.chunk_coordinate_y}</p> : <></>}
                 </div>
             ))}
+            {itemList ? itemList.length <= 0 ? <p> It seems that there isn't items to be retrieved.\nRemember to run the database initization program</p> : <></> : <></>}
+            {/* */}
         </div>
     )
 }

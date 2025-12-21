@@ -1,11 +1,10 @@
-import mongoose, { Mongoose, connection } from 'mongoose'
+import mongoose from 'mongoose'
 import {Request, Response, Router} from "express"
 import { connections } from "../server"
 import { log } from 'console'
 import {IWorldChunk, WorldChunk} from "./models/WorldChunk"
 import {IWorld, World} from "./models/World"
 import {IBlock, Block} from "./models/Block"
-import {ITrade, Trade} from "./models/Trade"
 
 const router: Router = Router()
 
@@ -18,7 +17,7 @@ router.get('/api/databases', async (req: Request, res: Response) => {
 	// List all databases.
 	try {
 		// Use the database keys. They are named same as the database names are.
-		const db:string[] = Object.keys(connections)
+		const db: any = Object.keys(connections)
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
@@ -34,15 +33,15 @@ router.get('/api/tables', async (req: Request, res: Response) => {
 	// Get the collections. Because the databases are homogenous all of them have same collections.
 	// Due to this we can use statically the GameDBRegion1, we know that this is not the best but we are going with it!
 	try {
-		const db: mongoose.Connection: any = connections["GameDBRegion1"]
+		const db: any = connections["GameDBRegion1"]
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
 
 		// List all collections, and return to front-end.
-		const collections: any: mongoose.mongo.CollectionInfo[] = await db.listCollections()
-		const names: string: string[] = collections.map((c: any) => c.name)
+		const collections: any = await db.listCollections()
+		const names: string = collections.map((c: any) => c.name)
 		return res.json({ tables: names })
 	// Catch any errors
 	} catch (err: any) {
@@ -58,17 +57,17 @@ router.get("/api/databases/:database/:table", async (req: Request, res: Response
 		const { database, table }: any = req.params;
 
 		// Check if the database exists
-		const dbConnection: mongoose.Connection: any = connections[database];
+		const dbConnection: any = connections[database];
 		if (!dbConnection) {
 			console.error("Invalid database name:", database);
 		return res.status(400).json({ error: "Invalid database name" });
 		}
 
 		// Get the collection
-		const collection: mongoose.Collection: any = dbConnection.collection(table);
+		const collection: any = dbConnection.collection(table);
 
 		// Fetch all documents (you can limit or filter if needed)
-		const documents: string[]: mongoose.mongo.WithId<mongoose.mongo.BSON.Document>[] = await collection.find({}).toArray();
+		const documents: string[] = await collection.find({}).toArray();
 
 		return res.json({ data: documents });
 	} catch (err: any) {
@@ -89,14 +88,14 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 
 		// Again fixed database because of prototyping and homogenous database system
 		console.log(connections);
-		const db: mongoose.Connection: any = connections["GameDBRegion1"]
+		const db: any = connections["GameDBRegion1"]
 		console.log(db);
 		
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
-		const collection: mongoose.Collection: any = db.collection("User");
+		const collection: any = db.collection("User");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
@@ -116,14 +115,14 @@ router.get("/api/user/:userID", async (req: Request, res: Response) =>{
 router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 	try {
 		const { worldID }: any = req.params;
-		const db: mongoose.Connection: any = connections["GameDBRegion1"]
+		const db: any = connections["GameDBRegion1"]
 		
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
 		// Find the correct collection
-		const collection: mongoose.Collection: any = db.collection("World");
+		const collection: any = db.collection("World");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
@@ -140,13 +139,13 @@ router.get("/api/world/:worldID", async (req: Request, res: Response) =>{
 router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>{
 	try {
 		const { inventoryID }: any = req.params;
-		const db: mongoose.Connection: any = connections["GameDBRegion1"]
+		const db: any = connections["GameDBRegion1"]
 		
 		// Error check
 		if (!db) {
 			return res.status(500).json({ error: 'No database connection available' })
 		}
-		const collection: mongoose.Collection: any = db.collection("Inventory");
+		const collection: any = db.collection("Inventory");
 		if (!collection) {
 			return res.status(500).json({error: "No collection available, please init database"})
 		}
@@ -162,25 +161,25 @@ router.get("/api/inventory/:inventoryID", async (req: Request, res: Response) =>
 router.get("/api/generateWorld", async (req: Request, res: Response) => {
 	try {
 	// Regions to homogenously save the new worlds in all dbs
-	const regions: string[]: string[] = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
-	const results: any[]: any[] = [];
+	const regions: string[] = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
+	const results: any[] = [];
 	let i = 0;
 
 	for (const region of regions) {
 		i = i + 1;
-		const database: mongoose.Connection: any = connections[region];
+		const database: any = connections[region];
 		if (!database) {
 			throw new Error(`Missing DB connection: ${region}`);
 		}
 
 		// Init collections
-		const worldCollection: mongoose.Collection: any = database.collection("World");
-		const chunkCollection: mongoose.Collection: any = database.collection("WorldChunk");
-		const blockCollection: mongoose.Collection: any = database.collection("Block")
+		const worldCollection: any = database.collection("World");
+		const chunkCollection: any = database.collection("WorldChunk");
+		const blockCollection: any = database.collection("Block")
 
 		// Create ID for new world
-		const intForID: number: number = await worldCollection.countDocuments()
-		const worldID: string: string = "world" + (intForID+1)
+		const intForID: number = await worldCollection.countDocuments()
+		const worldID: string = "world" + (intForID+1)
 
 		// Create world document
 		await worldCollection.insertOne({
@@ -248,7 +247,7 @@ router.get("/api/worldBlocks/:ChunkID", async (req: Request, res: Response) => {
 	try {
 		// Params and make connection. Homogenous so fixed database
 		const { ChunkID }: any = req.params;
-		const db: mongoose.Connection: any = connections["GameDBRegion1"]
+		const db: any = connections["GameDBRegion1"]
 
 		// Error check
 		if (!db) {
@@ -276,24 +275,24 @@ router.get("/api/worldBlocks/:ChunkID", async (req: Request, res: Response) => {
 // Creates a trade between two random users (for prototype) and returns to the user
 router.get("/api/tradeUsers", async (req: Request, res: Response) => {
 	try {
-		const dbNames: string[]: string[] = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
+		const dbNames: string[] = ["GameDBRegion1", "GameDBRegion2", "GameDBRegion3"];
 
-		const tradeID: string: string = "trade" + Date.now();
-		const senderID: string: string = "user" + (Math.floor(Math.random() * 30) + 1);
+		const tradeID: string = "trade" + Date.now();
+		const senderID: string = "user" + (Math.floor(Math.random() * 30) + 1);
 
 		// This is to prevent sender and receiver being the same user
-		let receiverID: string: string;
+		let receiverID: string;
 		do {
 			receiverID = "user" + (Math.floor(Math.random() * 30) + 1);
 		} while (receiverID === senderID);
 
-		const itemID: string: string = "item" + (Math.floor(Math.random() * 100) + 1);
+		const itemID: string = "item" + (Math.floor(Math.random() * 100) + 1);
 
-		const tradeDocument: { tradeID: string; senderID: string; receiverID: string; itemID: string }: ITrade = {
+		const tradeDocument: { tradeID: string; senderID: string; receiverID: string; itemID: string } = {
 			tradeID: tradeID,
 			senderID: senderID,
 			receiverID: receiverID,
-			itemId: itemID
+			itemID: itemID
 		};
 
 		// Insert the tradeDocument into all databases
